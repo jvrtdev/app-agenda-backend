@@ -2,6 +2,7 @@
 
 use App\Controllers\AgendaController;
 use App\Controllers\UserController;
+use Middleware\JwtMiddleware;
 use Slim\Factory\AppFactory;
 // use Slim\Routing\RouteCollectorProxy;
 // use Slim\Routing\RouteContext;
@@ -46,17 +47,27 @@ $app->options('/{routes:.*}', function (Request $request, Response $response) {
 
 // // The RoutingMiddleware should be added after our CORS middleware so routing is performed first
 // $app->addRoutingMiddleware();
-
+$app->post('/user/create', UserController::class . ':createUser');
+$app->post('/user/login', UserController::class . ':loginUser');
+$app->post('/teste', UserController::class . ':testToken');
 
 //get
 $app->get('/', UserController::class . ':teste');
-$app->get('/api/users', UserController::class . ':getUsers');
-$app->get('/api/bookings', AgendaController::class . ':getAllBookings');
+
+$app->group('/api', function ($group) {
+  $group->get('/users', UserController::class . ':getUsers');
+  $group->get('/bookings', AgendaController::class . ':getAllBookings');
+  $group->post('/booking/create', AgendaController::class . ':createBooking');
+  $group->delete('/user/delete', UserController::class . ':deleteUser');
+  
+  
+})->add(new JwtMiddleware("minhachavesecreta"));
+  
+
 //post
-$app->post('/api/user/create', UserController::class . ':createUser');
-$app->post('/api/user/login', UserController::class . ':loginUser');
-$app->post('/api/booking/create', AgendaController::class . ':createBooking');
+
+
 //gelete
-$app->delete('/user/delete', UserController::class . ':deleteUser');
+
 
 $app->run();
