@@ -16,7 +16,7 @@ class UserRepository
 
   public function getUsers()
   {
-    $sql = 'SELECT * FROM usuarios';
+    $sql = 'SELECT * FROM clientes';
     
     $stmt = $this->database->getConnection()->prepare($sql);
 
@@ -26,7 +26,7 @@ class UserRepository
   }
   public function loginUser($data)
   {
-    $sql = 'SELECT * FROM usuarios WHERE email = :email AND senha = :senha';
+    $sql = 'SELECT * FROM clientes WHERE email = :email AND senha = :senha';
 
     $stmt = $this->database->getConnection()->prepare($sql);
     
@@ -34,36 +34,27 @@ class UserRepository
     $stmt->bindValue(':senha', $data->senha);
     $stmt->execute();
     
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Verifica se encontrou algum usuário com as credenciais fornecidas
-    if ($user) {
-        // Retorna os dados do usuário
-        return $user;
-    } else {
-        // Retorna null se não encontrou nenhum usuário
-        return null;
-    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
     
   }
   
   public function createUser($data)
   {
-    $sql = 'INSERT INTO usuarios (nome, email, senha, tipo, telefone) VALUES (:nome,:email,:senha,:tipo,:telefone)';
+    $sql = 'INSERT INTO clientes (nome, email, senha, celular, foto_perfil) VALUES (:nome,:email,:senha,:celular,:foto_perfil)';
     
     $stmt = $this->database->getConnection()->prepare($sql);
     
     $stmt->bindValue(':nome', $data->nome);
     $stmt->bindValue(':email', $data->email);
     $stmt->bindValue(':senha', $data->senha);
-    $stmt->bindValue(':tipo', $data->tipo);
-    $stmt->bindValue(':telefone', $data->telefone);
+    $stmt->bindValue(':celular', $data->celular);
+    $stmt->bindValue(':foto_perfil', $data->foto_perfil);
 
     return $stmt->execute();
   }
   public function deleteUser($email)
   {
-    $sql = 'DELETE FROM usuarios WHERE email=:emai';
+    $sql = 'DELETE FROM clientes WHERE email=:emai';
 
     $stmt = $this->database->getConnection()->prepare($sql);
     $stmt->bindValue(':email', $email);
