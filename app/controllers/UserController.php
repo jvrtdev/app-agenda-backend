@@ -64,7 +64,7 @@ class UserController{
         // Retorna o token JWT no cabeçalho de autorização
         $response = $response->withHeader('Authorization', $token);
         
-        $response->getBody()->write(json_encode(['message'=>'Usuario logado com sucesso!']));
+        $response->getBody()->write(json_encode(['token'=> $token]));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
       }
       $response->getBody()->write(json_encode(['message'=>'Erro ao logar usuario, verifique as credenciais']));
@@ -92,7 +92,7 @@ class UserController{
       
       if($result){
         $token = $this->auth->testToken($result);
-        $response->getBody()->write(json_encode($token));
+        $response->getBody()->write(json_encode(["token" => $token]));
         return $response->withStatus(200)->withHeader('Content-Type','application/json');
       }
       
