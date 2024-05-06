@@ -19,8 +19,6 @@ Class Auth
   {
     $this->secret_key = "minhachavesecreta";
 
-    $this->time = 3600;
-
     $database = new Database;
       
     $this->userRepository = new UserRepository($database);
@@ -28,13 +26,11 @@ Class Auth
   
   public function createToken($userData)
   {
-    $now = time();
-    $expirationTime = $now + $this->time;
+
 
     $payload = [
       'email' => $userData['email'],
       'senha' => $userData['senha'],
-      'exp' => $expirationTime,
     ];
     
     $jwt = JWT::encode($payload, $this->secret_key , 'HS256');//args->informacoes, chave secreta, criptografia
